@@ -1,0 +1,65 @@
+# =========================
+# SPRING BOOT / JAVA
+# =========================
+
+target/
+build/
+.gradle/
+
+*.class
+*.jar
+*.war
+*.ear
+
+.idea/
+*.iml
+
+.settings/
+.project
+.classpath
+
+# Logs
+logs/
+*.log
+
+# =========================
+# NODE.JS
+# =========================
+
+node_modules/
+dist/
+build/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# ENVIRONMENT
+# =========================
+
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================
+# OS FILES
+# =========================
+
+.DS_Store
+Thumbs.db
+
+# =========================
+# VSCODE
+# =========================
+
+.vscode/
+
+# =========================
+# SPRING CONFIG LOCAL
+# =========================
+
+application-local.properties
+application-local.yml
