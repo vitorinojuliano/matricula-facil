@@ -4,7 +4,7 @@ Interface web do sistema de matrícula desenvolvida como projeto de treinamento 
 
 ## Sobre o projeto
 
-Aplicação React que simula o fluxo de matrícula de um estudante: login, cadastro e visualização do painel com dados acadêmicos.
+Aplicação React que integra com a API real do backend (Spring Boot): login, cadastro, catálogo de disciplinas, inscrição/cancelamento de matrícula, histórico em "Minhas Matérias" e edição de perfil.
 
 ## Tecnologias
 
@@ -13,7 +13,7 @@ Aplicação React que simula o fluxo de matrícula de um estudante: login, cadas
 | Framework | React 18 + TypeScript |
 | Build | Vite 5 |
 | Estilização | Tailwind CSS 3 |
-| CI/CD | GitLab CI / GitHub Actions |
+| HTTP | Axios |
 
 ## Pré-requisitos
 
@@ -24,13 +24,15 @@ Aplicação React que simula o fluxo de matrícula de um estudante: login, cadas
 
 ```bash
 # Instalar dependências
-npm ci
+npm install
+
+# Configurar a URL da API (arquivo .env, chave VITE_API_URL)
 
 # Iniciar servidor de desenvolvimento
 npm run dev
 ```
 
-O servidor sobe em `http://localhost:5173`.
+O servidor sobe em `http://localhost:5173`. A API precisa estar rodando (ver README do backend).
 
 ## Scripts disponíveis
 
@@ -45,26 +47,17 @@ O servidor sobe em `http://localhost:5173`.
 ```
 src/
 ├── assets/         # Ícones SVG como componentes React
-├── components/     # Componentes reutilizáveis (formulários, cabeçalhos, rodapés)
-├── pages/          # Páginas da aplicação
-│   ├── LoginPage.tsx
-│   ├── SignupPage.tsx
-│   └── DashboardPage.tsx
-├── data/           # Dados mock para desenvolvimento
-├── types.ts        # Tipos e interfaces TypeScript
+├── components/     # Componentes reutilizáveis (cards, formulários, header, modal de detalhes)
+├── pages/          # LoginPage, SignupPage, DashboardPage
+├── services/       # api.ts — instância do axios (token, erro 401)
+├── types/          # index.ts — tipos batendo com os DTOs do backend
 ├── App.tsx         # Componente raiz e roteamento por estado
 └── main.tsx        # Entry point do React
 ```
 
-## Páginas
+## Páginas / funcionalidades
 
-- **Login** — autenticação do estudante
-- **Cadastro** — criação de nova conta
-- **Dashboard** — painel com dados acadêmicos (curso, período, semestre, matrícula)
-
-## CI/CD
-
-O pipeline executa `npm ci && npm run build` automaticamente em pushes para `main` e em merge requests, gerando o artefato em `dist/` com retenção de 1 semana.
-
-- GitLab CI: `.gitlab-ci.yml`
-- GitHub Actions: `.github/workflows/build.yml`
+- **Login / Cadastro** — autenticação real via API
+- **Catálogo** — disciplinas em cards, com motor de validação (pré-requisito, conflito de horário, limite de créditos) e inscrição
+- **Minhas Matérias** — histórico de matrículas com cancelamento e filtro por semestre/ano
+- **Meu Perfil** — edição de e-mail e troca de senha

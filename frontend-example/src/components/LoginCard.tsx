@@ -1,16 +1,34 @@
-import { FormEvent } from 'react'
+import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EmailIcon, LockIcon, ArrowRightIcon } from '../assets/icons'
 import InputField from './InputField'
-import { Page } from '../types'
+import { Page, User } from '../types'
+import api from '../services/api'
 
 interface LoginCardProps {
   onNavigate?: (page: Page) => void
+  onLoginSuccess: (user: User) => void
 }
 
-export default function LoginCard({ onNavigate }: LoginCardProps) {
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+export default function LoginCard({ onNavigate, onLoginSuccess }: LoginCardProps) {
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
-    onNavigate?.('dashboard')
+    setErro('')
+    setCarregando(true)
+
+    try {
+      const resposta = await api.post('/login', { email, senha })
+      localStorage.setItem('token', resposta.data.token)
+      onLoginSuccess(resposta.data.user)
+    } catch (err: any) {
+      setErro(err.response?.data?.message || 'Não foi possível entrar. Tente novamente.')
+    } finally {
+      setCarregando(false)
+    }
   }
 
   return (
@@ -36,6 +54,9 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           icon={<EmailIcon />}
           type="email"
           placeholder="seu@email.com"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <InputField
@@ -43,16 +64,23 @@ export default function LoginCard({ onNavigate }: LoginCardProps) {
           icon={<LockIcon />}
           type="password"
           placeholder="••••••••"
-          rightElement="Esqueceu a senha?"
+          name="senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
         />
+
+        {erro && (
+          <p className="text-sm text-red-600">{erro}</p>
+        )}
 
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full flex items-center justify-center gap-2 bg-brand-primary text-white font-medium text-sm leading-5 px-4 py-2 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+            disabled={carregando}
+            className="w-full flex items-center justify-center gap-2 bg-brand-primary text-white font-medium text-sm leading-5 px-4 py-2 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 transition-colors disabled:opacity-60"
           >
-            Entrar
-            <ArrowRightIcon />
+            {carregando ? 'Entrando...' : 'Entrar'}
+            {!carregando && <ArrowRightIcon />}
           </button>
         </div>
       </form>
