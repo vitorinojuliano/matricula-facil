@@ -1,6 +1,6 @@
 package com.catijr.backend.controller;
 
-import com.catijr.backend.config.ServicoJwt;
+import com.catijr.backend.service.ServicoJwt;
 import com.catijr.backend.dto.RespostaPerfil;
 import com.catijr.backend.dto.SolicitacaoAtualizacaoPerfil;
 import com.catijr.backend.dto.SolicitacaoLogin;

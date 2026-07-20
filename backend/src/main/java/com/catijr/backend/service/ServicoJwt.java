@@ -1,4 +1,4 @@
-package com.catijr.backend.config;
+package com.catijr.backend.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;

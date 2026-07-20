@@ -1,5 +1,6 @@
 package com.catijr.backend.config;
 
+import com.catijr.backend.service.ServicoJwt;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
