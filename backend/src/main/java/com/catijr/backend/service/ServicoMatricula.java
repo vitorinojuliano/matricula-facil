@@ -13,6 +13,7 @@ import com.catijr.backend.repository.RepositorioMatricula;
 import com.catijr.backend.repository.RepositorioUsuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,7 @@ public class ServicoMatricula {
     @Autowired
     private RepositorioDisciplina repositorioDisciplina;
 
+    @Transactional
     public RespostaMatricula matricula(Long usuarioId, SolicitacaoMatricula requisicao) {
         UsuarioModelo usuario = repositorioUsuario.findById(usuarioId)
                 .orElseThrow(()->new ExcecaoUsuarioNaoEncontrado("Usuário não encontrado"));
@@ -103,6 +105,7 @@ public class ServicoMatricula {
 
         return resposta;
     }
+    @Transactional
     public void cancelarMatricula(long matriculaId, long usuarioId){
         MatriculaModelo matricula = repositorioMatricula
                 .findByIdAndUsuarioId(matriculaId, usuarioId)
