@@ -4,6 +4,7 @@ import com.catijr.backend.dto.SolicitacaoMatricula;
 import com.catijr.backend.dto.RespostaMatricula;
 import com.catijr.backend.exception.ExcecaoDisciplinaNaoEncontrada;
 import com.catijr.backend.exception.ExcecaoMatriculaNaoEncontrada;
+import com.catijr.backend.exception.ExcecaoRegraDeNegocio;
 import com.catijr.backend.exception.ExcecaoUsuarioNaoEncontrado;
 import com.catijr.backend.model.DisciplinaModelo;
 import com.catijr.backend.model.MatriculaModelo;
@@ -40,34 +41,34 @@ public class ServicoMatricula {
                 .orElseThrow(()-> new ExcecaoDisciplinaNaoEncontrada("Disciplina não encontrada"));
 
         if(repositorioMatricula.existsByUsuarioIdAndDisciplinaIdAndStatusIn(usuarioId, disciplina.getId(), List.of("INSCRITO", "CANCELADA"))) {
-            throw new RuntimeException("Você já se inscreveu nesta disciplina anteriormente");
+            throw new ExcecaoRegraDeNegocio("Você já se inscreveu nesta disciplina anteriormente");
         }
         if(disciplina.getVagas() <= 0){
-            throw new RuntimeException("Sem vagas");
+            throw new ExcecaoRegraDeNegocio("Sem vagas");
         }
         if(disciplina.getPreRequisito() != null){
             boolean temPreRequisito = repositorioMatricula.existsByUsuarioIdAndDisciplinaCodigoAndStatus(usuarioId,
                     disciplina.getPreRequisito().getCodigo(), "CONCLUIDA");
 
             if(!temPreRequisito){
-                throw new RuntimeException("Sem pre-requisito de " + disciplina.getPreRequisito().getCodigo());
+                throw new ExcecaoRegraDeNegocio("Sem pre-requisito de " + disciplina.getPreRequisito().getCodigo());
             }
         }
 
         if(!disciplina.getStatus().equals("DISPONIVEL")){
-            throw new RuntimeException("Disciplina não está disponivel para matricula");
+            throw new ExcecaoRegraDeNegocio("Disciplina não está disponivel para matricula");
         }
 
         List<MatriculaModelo> matriculasAtivas = repositorioMatricula.findByUsuarioIdAndStatus(usuarioId, "INSCRITO");
         for (MatriculaModelo m :  matriculasAtivas) {
             if (m.getDisciplina().getHorario().equals(disciplina.getHorario())) {
-                throw new RuntimeException("Conflito de horario com disciplina: "+m.getDisciplina().getHorario());
+                throw new ExcecaoRegraDeNegocio("Conflito de horario com disciplina: "+m.getDisciplina().getHorario());
             }
         }
 
         Integer creditosAtuais = calcularCreditosAtuais(usuarioId);
         if(creditosAtuais + disciplina.getCreditos()>24){
-            throw new RuntimeException("Limite de creditos atingido");
+            throw new ExcecaoRegraDeNegocio("Limite de creditos atingido");
         }
 
 
@@ -111,7 +112,7 @@ public class ServicoMatricula {
                 .findByIdAndUsuarioId(matriculaId, usuarioId)
                 .orElseThrow(()-> new ExcecaoMatriculaNaoEncontrada("Matricula não encontrada"));
         if(!matricula.getStatus().equals("INSCRITO")){
-            throw new RuntimeException("Não pode ser cancelado");
+            throw new ExcecaoRegraDeNegocio("Não pode ser cancelado");
         }
 
         DisciplinaModelo disciplina = matricula.getDisciplina();

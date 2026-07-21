@@ -4,6 +4,7 @@ import com.catijr.backend.dto.SolicitacaoAtualizacaoPerfil;
 import com.catijr.backend.dto.SolicitacaoLogin;
 import com.catijr.backend.dto.SolicitacaoCadastro;
 import com.catijr.backend.exception.ExcecaoEmailJaCadastrado;
+import com.catijr.backend.exception.ExcecaoRegraDeNegocio;
 import com.catijr.backend.exception.ExcecaoSenhaIncompativel;
 import com.catijr.backend.exception.ExcecaoUsuarioNaoEncontrado;
 import com.catijr.backend.model.UsuarioModelo;
@@ -51,7 +52,7 @@ public class ServicoUsuario {
                 .orElseThrow(()-> new ExcecaoUsuarioNaoEncontrado("Usuário não encontrado"));
         if(solicitacao.getNovaSenha() != null && !solicitacao.getNovaSenha().isEmpty()) {
             if (solicitacao.getSenhaAtual() == null || solicitacao.getSenhaAtual().isEmpty()) {
-                throw new RuntimeException("Senha atual é obrigatória para alterar a senha");
+                throw new ExcecaoRegraDeNegocio("Senha atual é obrigatória para alterar a senha");
             }
 
             if (!passwordEncoder.matches(solicitacao.getSenhaAtual(), (usuario.getSenha()))) {
@@ -65,7 +66,7 @@ public class ServicoUsuario {
             repositorioUsuario.findByEmail(solicitacao.getEmail())
                     .ifPresent(u -> {
                         if (!u.getId().equals(usuarioId)){
-                            throw new RuntimeException("Email já está em uso");
+                            throw new ExcecaoRegraDeNegocio("Email já está em uso");
                         }
             });
 

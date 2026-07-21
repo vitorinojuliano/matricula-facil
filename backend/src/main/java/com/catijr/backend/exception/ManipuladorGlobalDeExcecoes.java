@@ -53,9 +53,15 @@ public class ManipuladorGlobalDeExcecoes {
                 .body(Map.of("error", "ENROLLMENT_NOT_FOUND", "message", e.getMessage()));
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<?> tratarRegraDeNegocio(RuntimeException e) {
+    @ExceptionHandler(ExcecaoRegraDeNegocio.class)
+    public ResponseEntity<?> tratarRegraDeNegocio(ExcecaoRegraDeNegocio e) {
         return ResponseEntity.badRequest()
                 .body(Map.of("error", "BUSINESS_RULE_ERROR", "message", e.getMessage()));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<?> tratarErroInesperado(Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Map.of("error", "INTERNAL_SERVER_ERROR", "message", "Erro interno no servidor"));
     }
 }
