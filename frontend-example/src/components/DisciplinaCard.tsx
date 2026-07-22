@@ -38,7 +38,9 @@ export default function DisciplinaCard({
 
   let motivoBloqueio: { cor: 'vermelho' | 'laranja'; mensagem: string } | null = null
   if (disponivelParaInscricao) {
-    if (!preRequisitoAtendido) {
+    if (vagas <= 0) {
+      motivoBloqueio = { cor: 'vermelho', mensagem: 'Sem vagas disponíveis' }
+    } else if (!preRequisitoAtendido) {
       motivoBloqueio = { cor: 'vermelho', mensagem: `Pré-requisito pendente: ${preRequisitoCodigo}` }
     } else if (conflitoHorario) {
       motivoBloqueio = { cor: 'laranja', mensagem: `Conflito de horário com ${conflitoHorario.codigoDaDisciplina}` }
@@ -87,7 +89,7 @@ export default function DisciplinaCard({
     rotuloBotao = processando ? 'Inscrevendo...' : 'Inscrever-se'
     classeBotao = 'bg-brand-primary text-white hover:bg-indigo-700 active:bg-indigo-800'
   } else if (motivoBloqueio) {
-    rotuloBotao = 'Indisponível'
+    rotuloBotao = 'Bloqueado'
     classeBotao =
       motivoBloqueio.cor === 'vermelho' ? 'bg-red-100 text-red-700 cursor-default' : 'bg-amber-100 text-amber-700 cursor-default'
   } else {

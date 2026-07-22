@@ -118,6 +118,23 @@ public class CarregadorDadosIniciais implements CommandLineRunner {
                 "Projeto interdisciplinar envolvendo engenharia de software.",
                 disciplinas.get("ES001"), 2, 2026));
 
+        disciplinas.put("RC001", salvarDisciplina("Redes de Computadores", "RC001", 4, 20, "12:00-14:00",
+                "DISPONIVEL", "Prof. Henrique Barros",
+                "Fundamentos de redes, protocolos de comunicação e arquitetura TCP/IP.",
+                null, 2, 2026));
+
+        disciplinas.put("COMP001", salvarDisciplina("Compiladores", "COMP001", 4, 15, "06:00-08:00",
+                "DISPONIVEL", "Profa. Beatriz Nogueira",
+                "Análise léxica, sintática e semântica; construção de compiladores.",
+                disciplinas.get("ED001"), 2, 2026));
+
+        // Mesmo horario de BD001 (14:00-16:00), que o aluno seed ja tem INSCRITO --
+        // serve pra demonstrar o bloqueio por conflito de horario na tela de catalogo.
+        disciplinas.put("SEG001", salvarDisciplina("Segurança da Informação", "SEG001", 4, 10, "14:00-16:00",
+                "DISPONIVEL", "Prof. Rodrigo Farias",
+                "Criptografia, autenticação e boas práticas de segurança de sistemas.",
+                null, 2, 2026));
+
         UsuarioModelo aluno = new UsuarioModelo();
         aluno.setEmail("aluno@matriculafacil.com");
         aluno.setSenha(passwordEncoder.encode("senha123"));
