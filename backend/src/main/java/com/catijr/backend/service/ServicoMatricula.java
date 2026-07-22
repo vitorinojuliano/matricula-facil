@@ -61,12 +61,14 @@ public class ServicoMatricula {
 
         List<MatriculaModelo> matriculasAtivas = repositorioMatricula.findByUsuarioIdAndStatus(usuarioId, "INSCRITO");
         for (MatriculaModelo m :  matriculasAtivas) {
-            if (m.getDisciplina().getHorario().equals(disciplina.getHorario())) {
+            boolean mesmoPeriodo = m.getDisciplina().getSemestre().equals(disciplina.getSemestre())
+                    && m.getDisciplina().getAno().equals(disciplina.getAno());
+            if (mesmoPeriodo && m.getDisciplina().getHorario().equals(disciplina.getHorario())) {
                 throw new ExcecaoRegraDeNegocio("Conflito de horario com disciplina: "+m.getDisciplina().getHorario());
             }
         }
 
-        Integer creditosAtuais = calcularCreditosAtuais(usuarioId);
+        Integer creditosAtuais = calcularCreditosAtuais(usuarioId, disciplina.getSemestre(), disciplina.getAno());
         if(creditosAtuais + disciplina.getCreditos()>24){
             throw new ExcecaoRegraDeNegocio("Limite de creditos atingido");
         }
@@ -86,8 +88,8 @@ public class ServicoMatricula {
         return paraResposta(matriculaSalva);
     }
 
-    public Integer calcularCreditosAtuais(Long usuarioId){
-        Integer creditos = repositorioMatricula.somarCreditosPorUsuarioId(usuarioId);
+    public Integer calcularCreditosAtuais(Long usuarioId, Integer semestre, Integer ano){
+        Integer creditos = repositorioMatricula.somarCreditosPorUsuarioId(usuarioId, semestre, ano);
         return creditos == null ? 0 : creditos;
     }
 

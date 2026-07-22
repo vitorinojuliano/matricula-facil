@@ -43,7 +43,7 @@ public class ControladorMatricula {
 
         List<RespostaMatricula> matriculas = servicoMatricula.listarMatriculasPorFiltro(usuario.getId(), semestre, ano);
 
-        Integer creditos = servicoMatricula.calcularCreditosAtuais(usuario.getId());
+        Integer creditos = servicoMatricula.calcularCreditosAtuais(usuario.getId(), semestre, ano);
 
         return ResponseEntity.ok(Map.of(
                 "matriculas", matriculas,

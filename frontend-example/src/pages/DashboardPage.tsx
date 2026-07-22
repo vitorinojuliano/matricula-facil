@@ -38,7 +38,9 @@ export default function DashboardPage({ user, onLogout, onUserUpdate }: Dashboar
 
   function carregarMatriculas() {
     return api
-      .get<{ matriculas: Matricula[]; creditosAtuais: number }>('/matricula')
+      .get<{ matriculas: Matricula[]; creditosAtuais: number }>('/matricula', {
+        params: { semestre: SEMESTRE_ATUAL, ano: ANO_ATUAL },
+      })
       .then((resposta) => {
         setMatriculas(resposta.data.matriculas)
         setCreditosAtuais(resposta.data.creditosAtuais)
@@ -52,8 +54,6 @@ export default function DashboardPage({ user, onLogout, onUserUpdate }: Dashboar
   }, [])
 
   const matriculasInscritas = matriculas.filter((m) => m.status === 'INSCRITO')
-
-  const matriculasDoSemestreAtual = matriculas.filter((m) => m.semestre === SEMESTRE_ATUAL && m.ano === ANO_ATUAL)
 
   const [filtroSemestre, setFiltroSemestre] = useState<number | 'todos'>('todos')
   const [filtroAno, setFiltroAno] = useState<number | 'todos'>('todos')
@@ -172,13 +172,13 @@ export default function DashboardPage({ user, onLogout, onUserUpdate }: Dashboar
               <p className="mt-8 text-sm text-red-600">{erroMatriculas}</p>
             )}
 
-            {!carregandoMatriculas && !erroMatriculas && matriculasDoSemestreAtual.length === 0 && (
+            {!carregandoMatriculas && !erroMatriculas && matriculas.length === 0 && (
               <p className="mt-8 text-sm text-ui-muted">Você não tem matrículas no semestre atual.</p>
             )}
 
-            {!carregandoMatriculas && !erroMatriculas && matriculasDoSemestreAtual.length > 0 && (
+            {!carregandoMatriculas && !erroMatriculas && matriculas.length > 0 && (
               <div className="mt-8 flex flex-col gap-3">
-                {matriculasDoSemestreAtual.map((matricula) => (
+                {matriculas.map((matricula) => (
                   <MatriculaRow key={matricula.id} matricula={matricula} onCancelar={handleCancelar} />
                 ))}
               </div>

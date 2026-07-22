@@ -142,7 +142,7 @@ class ServicoMatriculaTest {
         when(repositorioDisciplina.findById(10L)).thenReturn(Optional.of(disciplina));
         when(repositorioMatricula.existsByUsuarioIdAndDisciplinaIdAndStatusIn(1L, 10L, List.of("INSCRITO", "CANCELADA"))).thenReturn(false);
         when(repositorioMatricula.findByUsuarioIdAndStatus(1L, "INSCRITO")).thenReturn(List.of());
-        when(repositorioMatricula.somarCreditosPorUsuarioId(1L)).thenReturn(20);
+        when(repositorioMatricula.somarCreditosPorUsuarioId(1L, 1, 2026)).thenReturn(20);
 
         SolicitacaoMatricula requisicao = new SolicitacaoMatricula();
         requisicao.setDisciplinaId(10L);

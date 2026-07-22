@@ -21,8 +21,12 @@ public interface RepositorioMatricula extends JpaRepository<MatriculaModelo, Lon
     JOIN r.disciplina d
     WHERE r.usuario.id = :usuarioId
     AND r.status = 'INSCRITO'
+    AND (:semestre IS NULL OR d.semestre = :semestre)
+    AND (:ano IS NULL OR d.ano = :ano)
     """)
-    Integer somarCreditosPorUsuarioId(@Param("usuarioId") Long usuarioId);
+    Integer somarCreditosPorUsuarioId(@Param("usuarioId") Long usuarioId,
+                                       @Param("semestre") Integer semestre,
+                                       @Param("ano") Integer ano);
 
     @Query("""
     SELECT COUNT(m) > 0
