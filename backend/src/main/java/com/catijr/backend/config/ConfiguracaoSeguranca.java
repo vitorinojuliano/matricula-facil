@@ -29,7 +29,7 @@ public class ConfiguracaoSeguranca {
     @Bean
     public CorsConfigurationSource origensPermitidas() {
         CorsConfiguration configuracao = new CorsConfiguration();
-        configuracao.setAllowedOrigins(List.of("http://localhost:5173"));
+        configuracao.setAllowedOrigins(List.of("http://localhost:5173", "https://matricula-facil-app.onrender.com"));
         configuracao.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuracao.setAllowedHeaders(List.of("*"));
 
