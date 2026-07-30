@@ -59,6 +59,10 @@ public class ServicoUsuario {
                 throw new ExcecaoSenhaIncompativel("Senhas incorreta");
             }
 
+            if (solicitacao.getNovaSenha().length() < 6) {
+                throw new ExcecaoRegraDeNegocio("Senha deve ter no mínimo 6 caracteres");
+            }
+
             usuario.setSenha(passwordEncoder.encode(solicitacao.getNovaSenha()));
         }
 

@@ -26,7 +26,13 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
       await api.post('/cadastro', { email, senha, confirmarSenha })
       onNavigate?.('login')
     } catch (err: any) {
-      setErro(err.response?.data?.message || 'Não foi possível criar a conta. Tente novamente.')
+      const camposComErro = err.response?.data?.fields
+      const primeiroErroDeCampo = camposComErro && Object.values(camposComErro)[0]
+      setErro(
+        (primeiroErroDeCampo as string) ||
+          err.response?.data?.message ||
+          'Não foi possível criar a conta. Tente novamente.'
+      )
     } finally {
       setCarregando(false)
     }
