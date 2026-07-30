@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ChangeEvent, ReactNode } from 'react'
 
 interface InputFieldProps {
   label?: string
@@ -7,9 +7,12 @@ interface InputFieldProps {
   rightElement?: ReactNode
   type?: string
   placeholder?: string
+  name?: string
+  value?: string
+  onChange?: (e: ChangeEvent<HTMLInputElement>) => void
 }
 
-export default function InputField({ label, icon, rightIcon, rightElement, type = 'text', placeholder }: InputFieldProps) {
+export default function InputField({ label, icon, rightIcon, rightElement, type = 'text', placeholder, name, value, onChange }: InputFieldProps) {
   const withLeftIcon = Boolean(icon)
 
   const inputClasses = [
@@ -46,6 +49,9 @@ export default function InputField({ label, icon, rightIcon, rightElement, type 
         <input
           type={type}
           placeholder={placeholder}
+          name={name}
+          value={value}
+          onChange={onChange}
           className={inputClasses}
         />
         {rightIcon && (

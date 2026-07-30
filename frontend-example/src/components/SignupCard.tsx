@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { GraduationCapIcon, EyeOffIcon } from '../assets/icons'
 import InputField from './InputField'
 import { Page } from '../types'
+import api from '../services/api'
 
 interface SignupCardProps {
   onNavigate?: (page: Page) => void
@@ -9,6 +10,33 @@ interface SignupCardProps {
 
 export default function SignupCard({ onNavigate }: SignupCardProps) {
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [senha, setSenha] = useState('')
+  const [confirmarSenha, setConfirmarSenha] = useState('')
+  const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setErro('')
+    setCarregando(true)
+
+    try {
+      // O backend hoje só guarda email e senha do usuário
+      await api.post('/cadastro', { email, senha, confirmarSenha })
+      onNavigate?.('login')
+    } catch (err: any) {
+      const camposComErro = err.response?.data?.fields
+      const primeiroErroDeCampo = camposComErro && Object.values(camposComErro)[0]
+      setErro(
+        (primeiroErroDeCampo as string) ||
+          err.response?.data?.message ||
+          'Não foi possível criar a conta. Tente novamente.'
+      )
+    } finally {
+      setCarregando(false)
+    }
+  }
 
   return (
     <div className="bg-white border border-[rgba(199,196,216,0.4)] rounded-2xl shadow-[0px_25px_50px_-12px_rgba(79,70,229,0.05)] flex flex-col gap-8 p-6 sm:p-[41px]">
@@ -32,23 +60,23 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
         </p>
       </div>
 
-      <div className="flex flex-col gap-5 w-full">
-        <InputField
-          label="Nome Completo"
-          type="text"
-          placeholder="Ex: João da Silva"
-        />
-
+      <form className="flex flex-col gap-5 w-full" onSubmit={handleSubmit}>
         <InputField
           label="E-mail Institucional"
           type="email"
           placeholder="joao.silva@aluno.edu.br"
+          name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
         />
 
         <InputField
           label="Senha"
           type={showPassword ? 'text' : 'password'}
           placeholder="••••••••"
+          name="senha"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
           rightIcon={
             <button
               type="button"
@@ -65,16 +93,24 @@ export default function SignupCard({ onNavigate }: SignupCardProps) {
             label="Confirmar Senha"
             type="password"
             placeholder="••••••••"
+            name="confirmarSenha"
+            value={confirmarSenha}
+            onChange={(e) => setConfirmarSenha(e.target.value)}
           />
         </div>
 
+        {erro && (
+          <p className="text-sm text-red-600">{erro}</p>
+        )}
+
         <button
           type="submit"
-          className="w-full bg-brand-accent text-white font-normal text-base leading-6 py-[14px] rounded-lg shadow-[0px_4px_6px_-1px_rgba(79,70,229,0.2),0px_2px_4px_-2px_rgba(79,70,229,0.2)] hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+          disabled={carregando}
+          className="w-full bg-brand-accent text-white font-normal text-base leading-6 py-[14px] rounded-lg shadow-[0px_4px_6px_-1px_rgba(79,70,229,0.2),0px_2px_4px_-2px_rgba(79,70,229,0.2)] hover:bg-indigo-700 active:bg-indigo-800 transition-colors disabled:opacity-60"
         >
-          Criar Conta
+          {carregando ? 'Criando conta...' : 'Criar Conta'}
         </button>
-      </div>
+      </form>
 
       <div className="pt-2">
         <div className="border-t border-[rgba(199,196,216,0.2)] pt-6 w-full">

@@ -1,31 +1,36 @@
 import { useState } from 'react'
-import { GraduationCapIcon, MenuIcon } from '../assets/icons'
-import { User } from '../types'
+import { GraduationCapIcon, LogOutIcon, MenuIcon } from '../assets/icons'
+import { DashboardView, User } from '../types'
 
 interface DashboardHeaderProps {
   user: User
+  onLogout: () => void
+  activeView: DashboardView
+  onNavigate: (view: DashboardView) => void
 }
 
 interface NavLink {
   label: string
-  href: string
-  active: boolean
+  view: DashboardView
 }
 
-function getInitials(name: string): string {
-  return name
-    .split(' ')
-    .filter((_, i, arr) => i === 0 || i === arr.length - 1)
-    .map((n) => n[0].toUpperCase())
-    .join('')
+function getInitials(email: string): string {
+  return email.slice(0, 2).toUpperCase()
 }
 
-export default function DashboardHeader({ user }: DashboardHeaderProps) {
+export default function DashboardHeader({ user, onLogout, activeView, onNavigate }: DashboardHeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const navLinks: NavLink[] = [
-    { label: 'Catálogo', href: '#', active: true },
+    { label: 'Catálogo', view: 'catalogo' },
+    { label: 'Minhas Matérias', view: 'materias' },
+    { label: 'Meu Perfil', view: 'perfil' },
   ]
+
+  function handleNavigate(view: DashboardView) {
+    onNavigate(view)
+    setMobileMenuOpen(false)
+  }
 
   return (
     <header className="bg-white border-b border-ui-border sticky top-0 z-10">
@@ -42,41 +47,43 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
             </span>
           </div>
 
-          {/* Nav links — desktop */}
           <nav className="hidden md:flex justify-items-start gap-1">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
+              <button
+                key={link.view}
+                type="button"
+                onClick={() => handleNavigate(link.view)}
                 className={[
                   'px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-                  link.active
+                  activeView === link.view
                     ? 'bg-brand-light text-brand-primary'
                     : 'text-ui-medium hover:bg-ui-bg hover:text-ui-dark',
                 ].join(' ')}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
           </nav>
 
-          {/* Right side */}
           <div className="flex items-center gap-3">
 
-            {/* User badge */}
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full bg-brand-accent flex items-center justify-center shrink-0">
                 <span className="text-white text-xs font-semibold leading-none">
-                  {getInitials(user.name)}
+                  {getInitials(user.email)}
                 </span>
               </div>
-              <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-sm font-medium text-ui-dark">{user.name}</span>
-                <span className="text-xs text-ui-muted">{user.periodo}</span>
-              </div>
+              <span className="hidden sm:block text-sm font-medium text-ui-dark">{user.email}</span>
             </div>
 
-            {/* Mobile menu toggle */}
+            <button
+              onClick={onLogout}
+              className="hidden md:flex items-center gap-1.5 text-ui-muted hover:text-ui-dark transition-colors px-3 py-1.5 rounded-lg hover:bg-ui-bg text-sm font-medium"
+            >
+              <LogOutIcon />
+              Sair
+            </button>
+
             <button
               className="md:hidden text-ui-muted hover:text-ui-dark transition-colors p-1.5 rounded-lg hover:bg-ui-bg"
               onClick={() => setMobileMenuOpen((v) => !v)}
@@ -86,23 +93,30 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
           </div>
         </div>
 
-        {/* Mobile nav */}
         {mobileMenuOpen && (
           <nav className="md:hidden border-t border-ui-border py-2 flex flex-col gap-1">
             {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
+              <button
+                key={link.view}
+                type="button"
+                onClick={() => handleNavigate(link.view)}
                 className={[
-                  'px-4 py-2.5 rounded-lg text-sm font-medium transition-colors',
-                  link.active
+                  'text-left px-4 py-2.5 rounded-lg text-sm font-medium transition-colors',
+                  activeView === link.view
                     ? 'bg-brand-light text-brand-primary'
                     : 'text-ui-medium hover:bg-ui-bg',
                 ].join(' ')}
               >
                 {link.label}
-              </a>
+              </button>
             ))}
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-sm font-medium text-ui-medium hover:bg-ui-bg transition-colors"
+            >
+              <LogOutIcon />
+              Sair
+            </button>
           </nav>
         )}
       </div>
