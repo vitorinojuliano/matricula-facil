@@ -1,12 +1,23 @@
-FROM eclipse-temurin:21-jdk-alpine
+# Estagio 1: builda o jar com Maven
+FROM eclipse-temurin:21-jdk-alpine AS build
 
 WORKDIR /app
 
-# Copia o arquivo JAR da aplicação
-COPY target/*.jar app.jar
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN chmod +x mvnw && ./mvnw dependency:go-offline -B
 
-# Expõe a porta da aplicação
+COPY src src
+RUN ./mvnw clean package -DskipTests -B
+
+# Estagio 2: imagem de runtime, so com o jar
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+COPY --from=build /app/target/*.jar app.jar
+
 EXPOSE 8080
 
-# Comando para rodar a aplicação
 ENTRYPOINT ["java", "-jar", "app.jar"]
