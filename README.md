@@ -4,6 +4,21 @@ Sistema de matrícula universitária desenvolvido como projeto de treinamento da
 
 ![Diagrama do projeto](diagrama_projeto.png)
 
+## Deploy
+
+O projeto está publicado e funcionando online:
+
+- **Site**: https://matricula-facil-app.onrender.com
+- **Documentação da API (Swagger)**: https://matricula-facil.onrender.com/swagger-ui/index.html
+
+**Usuário de teste**:
+- email: `aluno@matriculafacil.com`
+- senha: `senha123`
+
+**Onde está hospedado**: o site e a API ficam no **Render**, e o banco de dados (PostgreSQL) fica no **Neon**.
+
+**Aviso importante**: como o plano usado é gratuito, o site "desliga" sozinho depois de um tempo sem uso. Isso quer dizer que, se ninguém acessar por um tempo, a primeira vez que alguém abrir o link pode demorar de 30 a 50 segundos pra carregar (o site está "ligando" de novo). Depois disso, ele funciona normal.
+
 ## Estrutura
 
 | Pasta | Descrição |
